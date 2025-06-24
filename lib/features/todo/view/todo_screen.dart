@@ -27,7 +27,10 @@ class _TodoScreenState extends State<TodoScreen> {
       body: TodoListViewBuilder(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateTodoScreen() ));
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => ChangeNotifierProvider.value(
+                  value: context.read<TodoViewModel>(),
+                  child: CreateTodoScreen())));
         },
         child: const Icon(Icons.add),
       ),

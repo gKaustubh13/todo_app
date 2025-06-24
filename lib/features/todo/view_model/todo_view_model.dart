@@ -7,22 +7,30 @@ import 'package:todo_local_database/features/todo/service/todo_local_database_se
 class TodoViewModel extends ChangeNotifier {
   List<TodoModel> todos = [];
 
-  final service = TodoLocalDatabaseService();
+  final _service = TodoLocalDatabaseService();
+
+  TodoPriority selectedPriority = TodoPriority.low;
+
   void fetch() async {
-    todos = await service.readAll();
+    todos = await _service.readAll();
     notifyListeners();
   }
 
-  void create() async {
+  Future<void> create({required String title, required String description}) async {
     final model = CreateTodoModel(
-        title: "New Todo 1",
-        description: "Description",
+        title: title.trim(),
+        description: description.trim().isEmpty ? null : description,
         completed: false,
-        priority: TodoPriority.high,
+        priority: selectedPriority,
         createdAt: DateTime.now());
-    await service.create(model);
-    fetch();
+    final createdTodo = await _service.create(model);
+    todos = [...todos, createdTodo];
     notifyListeners();
     print("Todo created");
+  }
+
+  void onPriorityChangedEvent(TodoPriority priority) {
+    selectedPriority = priority;
+    notifyListeners();
   }
 }
