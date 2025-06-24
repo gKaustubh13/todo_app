@@ -1,16 +1,15 @@
 import 'package:todo_local_database/features/todo/model/todo_priority.dart';
 
 class TodoModel {
-  TodoModel({
-      required this.id,
+  TodoModel(
+      {required this.id,
       required this.title,
       this.description,
       required this.completed,
       required this.priority,
       required this.createdAt,
       this.updatedAt,
-      this.deletedAt
-    });
+      this.deletedAt});
 
   final int id;
   final String title;
@@ -21,7 +20,7 @@ class TodoModel {
   final DateTime? updatedAt;
   final DateTime? deletedAt;
 
-  factory TodoModel.fromDatabaseMap(Map<String, dynamic> map){
+  factory TodoModel.fromDatabaseMap(Map<String, dynamic> map) {
     return TodoModel(
       id: map["id"] as int,
       title: map["title"] as String,
@@ -34,12 +33,25 @@ class TodoModel {
           : null,
       deletedAt: map["deletedAt"] != null
           ? DateTime.fromMillisecondsSinceEpoch(map["deletedAt"] as int)
-          : null,   
+          : null,
     );
   }
 
-    Map<String, dynamic> toDatabaseUpdateMap(){
-    return{
+  Map<String, dynamic> toDatabaseMap() {
+    return {
+      "id": id,
+      "title": title,
+      "description": description,
+      "completed": completed ? 1 : 0,
+      "priority": priority.name,
+      "createdAt": createdAt.millisecondsSinceEpoch,
+      "updatedAt": updatedAt?.millisecondsSinceEpoch,
+      "deletedAt": deletedAt?.microsecondsSinceEpoch,
+    };
+  }
+
+  Map<String, dynamic> toDatabaseUpdateMap() {
+    return {
       "title": title,
       "description": description,
       "completed": completed ? 1 : 0,
@@ -47,10 +59,9 @@ class TodoModel {
       "updatedAt": DateTime.now().millisecondsSinceEpoch,
     };
   }
-  
-    Map<String, dynamic> toDatabaseDeleteMap(){
-    return{
-      
+
+  Map<String, dynamic> toDatabaseDeleteMap() {
+    return {
       "deletedAt": DateTime.now().millisecondsSinceEpoch,
     };
   }
