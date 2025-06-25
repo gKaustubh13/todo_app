@@ -11,23 +11,25 @@ class TodoPriorityOptionBuilder extends StatelessWidget {
     return Selector<TodoViewModel, TodoPriority>(
       selector: (context, viewModel) => viewModel.selectedPriority,
       builder: (context, selectedPriority, child) {
-      return Row(
-        children: TodoPriority.values
-            .map((priority) => Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
-                  child: ChoiceChip(
-                    label: Text(priority.name),
-                    onSelected: (value) {
-                      if(value){
-                        context.read<TodoViewModel>().onPriorityChangedEvent(priority);
-                      }
-                    },
-                    selected: priority == selectedPriority,
-                  ),
-                ))
-            .toList(),
-      );
-      } ,
+        return Row(
+          children: TodoPriority.values
+              .map((priority) => Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: ChoiceChip(
+                      label: Text(priority.name),
+                      onSelected: (value) {
+                        if (value) {
+                          context
+                              .read<TodoViewModel>()
+                              .onPriorityChangedEvent(priority);
+                        }
+                      },
+                      selected: priority == selectedPriority,
+                    ),
+                  ))
+              .toList(),
+        );
+      },
     );
   }
 }

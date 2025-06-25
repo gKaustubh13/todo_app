@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:todo_local_database/features/todo/model/create_todo_model.dart';
 import 'package:todo_local_database/features/todo/model/todo_model.dart';
@@ -5,32 +6,74 @@ import 'package:todo_local_database/features/todo/model/todo_priority.dart';
 import 'package:todo_local_database/features/todo/service/todo_local_database_service.dart';
 
 class TodoViewModel extends ChangeNotifier {
-  List<TodoModel> todos = [];
+  List<TodoModel> _todos = [];
+  UnmodifiableListView<TodoModel> get todos => UnmodifiableListView(_todos);
 
   final _service = TodoLocalDatabaseService();
 
-  TodoPriority selectedPriority = TodoPriority.low;
+  TodoPriority _selectedPriority = TodoPriority.low;
+  TodoPriority get selectedPriority => _selectedPriority;
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
 
   void fetch() async {
-    todos = await _service.readAll();
+    _todos = await _service.readAll();
     notifyListeners();
   }
 
-  Future<void> create({required String title, required String description}) async {
+  Future<void> create(
+      {required String title, required String description}) async {
+    _isLoading = true;
+    notifyListeners();
     final model = CreateTodoModel(
         title: title.trim(),
         description: description.trim().isEmpty ? null : description,
         completed: false,
-        priority: selectedPriority,
+        priority: _selectedPriority,
         createdAt: DateTime.now());
     final createdTodo = await _service.create(model);
-    todos = [...todos, createdTodo];
+    _todos = [...todos, createdTodo];
+    _isLoading = false;
     notifyListeners();
     print("Todo created");
   }
 
   void onPriorityChangedEvent(TodoPriority priority) {
-    selectedPriority = priority;
+    _selectedPriority = priority;
+    notifyListeners();
+  }
+
+  Future<void> update({
+    required TodoModel todo,
+    required String title,
+    required String description,
+  }) async {
+    int index = _todos.indexOf(todo);
+    _isLoading = true;
+    notifyListeners();
+    final updatedModel = todo.copywith(
+      title: title,
+      description: description,
+      priority: _selectedPriority,
+      updatedAt: DateTime.now(),
+    );
+    await _service.update(updatedModel);
+    _isLoading = false;
+
+    List<TodoModel> updatedTodos = List.from(_todos);
+    updatedTodos[index] = updatedModel;
+    _todos = updatedTodos;
+    notifyListeners();
+    print("Todo updated");
+  }
+
+  Future<void> delete({required TodoModel todo}) async {
+    int index = _todos.indexOf(todo);
+    await _service.delete(todo);
+    List<TodoModel> updatedTodos = List.from(_todos);
+    updatedTodos.removeAt(index);
+    _todos = updatedTodos;
     notifyListeners();
   }
 }
