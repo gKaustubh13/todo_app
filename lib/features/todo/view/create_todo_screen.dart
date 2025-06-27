@@ -73,8 +73,9 @@ class _CreateTodoScreenState extends State<CreateTodoScreen> {
                             hintText: "Enter Title...",
                             border: InputBorder.none,
                             filled: true,
-                            fillColor:
-                                Theme.of(context).colorScheme.surfaceContainer)),
+                            fillColor: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainer)),
                     SizedBox(
                       height: 4,
                     ),
@@ -94,8 +95,9 @@ class _CreateTodoScreenState extends State<CreateTodoScreen> {
                             hintText: "Enter Description...",
                             border: InputBorder.none,
                             filled: true,
-                            fillColor:
-                                Theme.of(context).colorScheme.surfaceContainer)),
+                            fillColor: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainer)),
                     SizedBox(
                       height: 4,
                     ),
@@ -114,34 +116,35 @@ class _CreateTodoScreenState extends State<CreateTodoScreen> {
                         child: FilledButton(
                             onPressed: () {
                               if (_formKey.currentState?.validate() == true) {
-                                if (widget.todo != null) {
+                                if (widget.todo == null) {
+                                  // Creating a new todo
                                   context
                                       .read<TodoViewModel>()
                                       .create(
-                                          title: titleController.text,
-                                          description: descriptionController.text)
+                                        title: titleController.text,
+                                        description: descriptionController.text,
+                                      )
                                       .whenComplete(() {
                                     if (context.mounted) {
                                       Navigator.of(context).pop();
                                     }
                                   });
-                                } else{
+                                } else {
+                                  // Updating existing todo
                                   context
                                       .read<TodoViewModel>()
                                       .update(
                                         todo: widget.todo!,
                                         title: titleController.text,
-                                        description: descriptionController.text
+                                        description: descriptionController.text,
                                       )
-                                      .whenComplete((){
-                                        if(context.mounted){
-                                          Navigator.of(context).popUntil((route){
-                                            return route.isFirst;
-                                          });
-                                        }
-                                      });
+                                      .whenComplete(() {
+                                    if (context.mounted) {
+                                      Navigator.of(context)
+                                          .popUntil((route) => route.isFirst);
+                                    }
+                                  });
                                 }
-      
                               }
                             },
                             child: Text("Create")))

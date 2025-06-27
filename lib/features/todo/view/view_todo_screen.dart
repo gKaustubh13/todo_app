@@ -17,36 +17,42 @@ class ViewTodoScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("View Todo"),
         actions: [
-          PopupMenuButton(itemBuilder: (context) {
-            return [
-              PopupMenuItem(
+          PopupMenuButton(
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
                   child: Text("Edit"),
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
                         builder: (_) => ChangeNotifierProvider.value(
-                            value: context.read<TodoViewModel>(),
-                            child: CreateTodoScreen(todo: todo))));
-                  })
-            ];
-          }),
-          PopupMenuItem(
-            child: Text("Delete"),
-            onTap: () {
-              TodoDialogHelper.instance.showDeleteConfirmationDialog(
-                context: context,
-                todo: todo,
-              );
+                          value: context.read<TodoViewModel>(),
+                          child: CreateTodoScreen(todo: todo),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                PopupMenuItem(
+                  child: Text("Delete"),
+                  onTap: () {
+                    TodoDialogHelper.instance.showDeleteConfirmationDialog(
+                      context: context,
+                      todo: todo,
+                    );
+                  },
+                ),
+              ];
             },
           ),
-          SizedBox(
-            width: 16,
-          ),
+          SizedBox(width: 16),
         ],
       ),
       body: SingleChildScrollView(
         child: Padding(
             padding: EdgeInsetsGeometry.all(16),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(todo.title,
                     style: Theme.of(context).textTheme.displaySmall),
