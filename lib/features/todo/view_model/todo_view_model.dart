@@ -17,11 +17,25 @@ class TodoViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
+  String? _query;
+  TodoPriority? _filterPriority;
+
+
   void fetch() async {
-    _todos = await _service.readAll();
+    _todos = await _service.readAll(query: _query, priority: _filterPriority);
     notifyListeners();
   }
 
+  void onSearchQueryChangedEvent(String query)async {
+    _query = query;
+    fetch();
+  }
+
+  void onFilterPriorityChangedEvent(TodoPriority priority){
+    _filterPriority = priority;
+    fetch();
+
+  }
   Future<void> create(
       {required String title, required String description}) async {
     _isLoading = true;

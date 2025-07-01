@@ -1,13 +1,51 @@
 import 'package:todo_local_database/core/database/local_database.dart';
 import 'package:todo_local_database/features/todo/model/create_todo_model.dart';
 import 'package:todo_local_database/features/todo/model/todo_model.dart';
+import 'package:todo_local_database/features/todo/model/todo_priority.dart';
 
 class TodoLocalDatabaseService {
   final db = LocalDatabase.instance;
 
-  Future<List<TodoModel>> readAll() async {
-    final result =
-        await db.rawQuery("SELECT * FROM Todos WHERE deletedAt IS NULL");
+  Future<List<TodoModel>> readAll(
+      {String? query, TodoPriority? priority}) async {
+    final result = await db.rawQuery(
+      "SELECT * FROM Todos WHERE deletedAt IS NULL"
+      "${query != null && query.trim().isNotEmpty ? " AND title LIKE %$query%" : ""}"
+      "${priority != null ? " AND priority = ${priority.name}" : ""}",
+    );
+    return result
+        .map(
+          (map) => TodoModel.fromDatabaseMap(map),
+        )
+        .toList();
+  }
+
+  Future<List<TodoModel>> search(String query) async {
+    final result = await db.rawQuery(
+      "SELECT * FROM Todos WHERE deletedAt IS NULL AND title LIKE %$query%",
+    );
+    return result
+        .map(
+          (map) => TodoModel.fromDatabaseMap(map),
+        )
+        .toList();
+  }
+
+  Future<List<TodoModel>> filter(TodoPriority priority) async {
+    final result = await db.rawQuery(
+      "SELECT * FROM Todos WHERE deletedAt IS NULL AND priority = ${priority.name}",
+    );
+    return result
+        .map(
+          (map) => TodoModel.fromDatabaseMap(map),
+        )
+        .toList();
+  }
+
+  Future<List<TodoModel>> sort() async {
+    final result = await db.rawQuery(
+      "SELECT * FROM Todos WHERE deletedAt IS NULL ORDER BY creadtedAt ASC",
+    );
     return result
         .map(
           (map) => TodoModel.fromDatabaseMap(map),

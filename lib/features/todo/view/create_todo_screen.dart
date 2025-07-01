@@ -61,10 +61,13 @@ class _CreateTodoScreenState extends State<CreateTodoScreen> {
                         style: Theme.of(context).textTheme.titleMedium,
                         validator: (value) {
                           if (value == null) return "Title is required";
-                          if (value.trim().isEmpty == true)
+                          if (value.trim().isEmpty == true){
                             return "Title is required";
-                          if (value.trim().length <= 2)
+                          }
+                          if (value.trim().length <= 2){
                             return "Title shoud have more than 2 characters";
+                          }
+                            
                           return null;
                         },
                         maxLines: 2,
