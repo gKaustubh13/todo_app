@@ -25,7 +25,15 @@ class _TodoScreenState extends State<TodoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(TodoStrings.todosAppBarTitle)),
-      body: TodoListViewBuilder(),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            decoration: InputDecoration(hintText: "Search by title"),
+          ),
+          Expanded(child: TodoListViewBuilder()),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(

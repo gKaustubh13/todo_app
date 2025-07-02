@@ -2,16 +2,18 @@ import 'package:todo_local_database/core/database/local_database.dart';
 import 'package:todo_local_database/features/todo/model/create_todo_model.dart';
 import 'package:todo_local_database/features/todo/model/todo_model.dart';
 import 'package:todo_local_database/features/todo/model/todo_priority.dart';
+import 'package:todo_local_database/features/todo/model/todo_sort.dart';
 
 class TodoLocalDatabaseService {
   final db = LocalDatabase.instance;
 
   Future<List<TodoModel>> readAll(
-      {String? query, TodoPriority? priority}) async {
+      {String? query, TodoPriority? priority, TodoSort sort = TodoSort.defaultOption}) async {
     final result = await db.rawQuery(
       "SELECT * FROM Todos WHERE deletedAt IS NULL"
       "${query != null && query.trim().isNotEmpty ? " AND title LIKE %$query%" : ""}"
-      "${priority != null ? " AND priority = ${priority.name}" : ""}",
+      "${priority != null ? " AND priority = ${priority.name}" : ""}"
+      " ORDER BY ${sort.key} ${sort.ordering}",
     );
     return result
         .map(
