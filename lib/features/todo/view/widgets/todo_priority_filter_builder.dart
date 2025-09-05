@@ -34,6 +34,5 @@ class TodoPriorityFilterBuilder extends StatelessWidget {
         );
       },
     );
-    ;
   }
 }
