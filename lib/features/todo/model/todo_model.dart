@@ -1,16 +1,17 @@
 import 'package:equatable/equatable.dart';
 import 'package:todo_local_database/features/todo/model/todo_priority.dart';
 
-class TodoModel extends Equatable{
-  const TodoModel(
-      {required this.id,
-      required this.title,
-      this.description,
-      required this.completed,
-      required this.priority,
-      required this.createdAt,
-      this.updatedAt,
-      this.deletedAt});
+class TodoModel extends Equatable {
+  const TodoModel({
+    required this.id,
+    required this.title,
+    this.description,
+    required this.completed,
+    required this.priority,
+    required this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
+  });
 
   final int id;
   final String title;
@@ -21,21 +22,23 @@ class TodoModel extends Equatable{
   final DateTime? updatedAt;
   final DateTime? deletedAt;
 
-  TodoModel copywith({
+  TodoModel copyWith({
     String? title,
     String? description,
     TodoPriority? priority,
     DateTime? updatedAt,
+    DateTime? deletedAt,
   }) {
     return TodoModel(
       id: id,
       title: title ?? this.title,
-      description: description ?? description,
+      description: description ?? this.description,
       completed: completed,
       priority: priority ?? this.priority,
       createdAt: createdAt,
-      updatedAt: updatedAt ?? updatedAt,
-      deletedAt: deletedAt);
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+    );
   }
 
   factory TodoModel.fromDatabaseMap(Map<String, dynamic> map) {
@@ -75,25 +78,30 @@ class TodoModel extends Equatable{
       "completed": completed ? 1 : 0,
       "priority": priority.name,
       "updatedAt": DateTime.now().millisecondsSinceEpoch,
+      "deletedAt": deletedAt?.millisecondsSinceEpoch,
     };
   }
 
   Map<String, dynamic> toDatabaseDeleteMap() {
+    return {"deletedAt": DateTime.now().millisecondsSinceEpoch};
+  }
+
+  Map<String, dynamic> toDatabaseRestoreMap() {
     return {
-      "deletedAt": DateTime.now().millisecondsSinceEpoch,
+      "deletedAt": null,
+      "updatedAt": DateTime.now().millisecondsSinceEpoch,
     };
   }
-  
+
   @override
   List<Object?> get props => [
-    id,
-    title,
-    description,
-    completed,
-    priority,
-    createdAt,
-    updatedAt,
-    deletedAt
-  ];
-  
+        id,
+        title,
+        description,
+        completed,
+        priority,
+        createdAt,
+        updatedAt,
+        deletedAt,
+      ];
 }

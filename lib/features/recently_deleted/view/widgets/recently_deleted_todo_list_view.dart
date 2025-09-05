@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:todo_local_database/features/recently_deleted/view/view_recently_deleted_todo_screen.dart';
+import 'package:todo_local_database/features/recently_deleted/view_model/recently_deleted_view_model.dart';
 import 'package:todo_local_database/features/todo/model/todo_model.dart';
-import 'package:todo_local_database/features/todo/view/view_todo_screen.dart';
 import 'package:todo_local_database/features/todo/view/widgets/todo_list_view_item.dart';
-import 'package:todo_local_database/features/todo/view_model/todo_view_model.dart';
+import 'package:provider/provider.dart';
 
-class TodoListView extends StatelessWidget {
-  const TodoListView({super.key, required this.todos});
+class RecentlyDeletedTodoListView extends StatelessWidget {
+  const RecentlyDeletedTodoListView({super.key, required this.todos});
 
   final List<TodoModel> todos;
 
@@ -23,8 +23,8 @@ class TodoListView extends StatelessWidget {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => ChangeNotifierProvider.value(
-                  value: context.read<TodoViewModel>(),
-                  child: ViewTodoScreen(todo: todo),
+                  value: context.read<RecentlyDeletedViewModel>(),
+                  child: ViewRecentlyDeletedTodoScreen(todo: todo),
                 ),
               ),
             );

@@ -10,16 +10,16 @@ class TodoDeleteDialog extends StatelessWidget {
       title: Text(TodoStrings.totoDeleteDialogTitle),
       actions: [
         TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-            child: Text("Cancel")
+          onPressed: () {
+            Navigator.of(context).pop(false);
+          },
+          child: Text("Cancel"),
         ),
         FilledButton(
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-            child: Text("Delete")
+          onPressed: () {
+            Navigator.of(context).pop(true);
+          },
+          child: Text("Delete"),
         ),
       ],
     );
